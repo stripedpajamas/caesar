@@ -46,6 +46,16 @@ func TestDecrypt(t *testing.T) {
 		expected string
 	}{
 		{
+			"PDGW",
+			"playfair example",
+			"ABXQ",
+		},
+		{
+			"PDGR",
+			"playfair example",
+			"ABCX",
+		},
+		{
 			"BMODZBXDNABEKUDMUIXMMOUVIF",
 			"playfair example",
 			"HIDETHEGOLDINTHETREXESTUMP",
