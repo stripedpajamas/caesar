@@ -1,13 +1,13 @@
-package caesar_test
+package playfair_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/stripedpajamas/caesar"
+	"github.com/stripedpajamas/caesar/playfair"
 )
 
-func TestPlayfairEncrypt(t *testing.T) {
+func TestEncrypt(t *testing.T) {
 	// example from https://en.wikipedia.org/wiki/Playfair_cipher#Example
 	testCases := []struct {
 		input    string
@@ -32,14 +32,14 @@ func TestPlayfairEncrypt(t *testing.T) {
 	}
 
 	for idx, tc := range testCases {
-		if actual := caesar.PlayfairEncrypt(tc.input, tc.key); actual != tc.expected {
+		if actual := playfair.Encrypt(tc.input, tc.key); actual != tc.expected {
 			fmt.Printf("(en) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)
 			t.Fail()
 		}
 	}
 }
 
-func TestPlayfairDecrypt(t *testing.T) {
+func TestDecrypt(t *testing.T) {
 	testCases := []struct {
 		input    string
 		key      string
@@ -48,12 +48,12 @@ func TestPlayfairDecrypt(t *testing.T) {
 		{
 			"BMODZBXDNABEKUDMUIXMMOUVIF",
 			"playfair example",
-			"Hide the gold in the tree stump",
+			"HIDETHEGOLDINTHETREXESTUMP",
 		},
 	}
 
 	for idx, tc := range testCases {
-		if actual := caesar.PlayfairDecrypt(tc.input, tc.key); actual != tc.expected {
+		if actual := playfair.Decrypt(tc.input, tc.key); actual != tc.expected {
 			fmt.Printf("(de) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)
 			t.Fail()
 		}
