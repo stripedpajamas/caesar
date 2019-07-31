@@ -2,12 +2,9 @@ package caesar
 
 import (
 	"strings"
-)
 
-const upperMin = 65
-const upperMax = 90
-const lowerMin = 97
-const lowerMax = 122
+	"github.com/stripedpajamas/caesar/runes"
+)
 
 // Encrypt converts alphabetic characters to their down-shifted
 // values based on the key parameter (e.g. a shifted 1 = b)
@@ -24,7 +21,7 @@ func Decrypt(ciphertext string, key int) string {
 func process(input string, shiftVal int) string {
 	var out strings.Builder
 	for _, r := range input {
-		if isLetter(r) {
+		if runes.IsLetter(r) {
 			out.WriteRune(shift(r, shiftVal))
 		} else {
 			out.WriteRune(r)
@@ -35,12 +32,12 @@ func process(input string, shiftVal int) string {
 
 func shift(r rune, n int) rune {
 	var top, bottom rune
-	if isLower(r) {
-		top = lowerMax
-		bottom = lowerMin
+	if runes.IsLower(r) {
+		top = runes.LowerMax
+		bottom = runes.LowerMin
 	} else {
-		top = upperMax
-		bottom = upperMin
+		top = runes.UpperMax
+		bottom = runes.UpperMin
 	}
 
 	ret := r + rune(n)
@@ -52,16 +49,4 @@ func shift(r rune, n int) rune {
 	}
 
 	return ret
-}
-
-func isLetter(r rune) bool {
-	return isLower(r) || isUpper(r)
-}
-
-func isUpper(r rune) bool {
-	return (r >= upperMin && r <= upperMax)
-}
-
-func isLower(r rune) bool {
-	return (r >= lowerMin && r <= lowerMax)
 }

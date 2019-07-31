@@ -15,6 +15,16 @@ func TestPlayfairEncrypt(t *testing.T) {
 		expected string
 	}{
 		{
+			"abx",
+			"playfair example",
+			"PDGW",
+		},
+		{
+			"abc",
+			"playfair example",
+			"PDGR",
+		},
+		{
 			"Hide the gold in the tree stump",
 			"playfair example",
 			"BMODZBXDNABEKUDMUIXMMOUVIF",
