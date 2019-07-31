@@ -8,6 +8,21 @@ import (
 
 const xPad = 'X'
 const qPad = 'Q'
+const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
+
+type keyblock struct {
+	block  [5][5]rune
+	lookup map[rune]location
+}
+
+type location struct {
+	row int
+	col int
+}
+
+func (kb *keyblock) getCorrespondingPair(a, b rune) {
+	// TODO
+}
 
 // PlayfairEncrypt constructs a playfair alphabet from key,
 // and then encrypts plaintext using it
@@ -66,4 +81,48 @@ func unrollPlaintext(plaintext string) string {
 	}
 
 	return out.String()
+}
+
+func newKeyblock(key string) *keyblock {
+	kb := new(keyblock)
+	kb.block = [5][5]rune{}
+	kb.lookup = make(map[rune]location)
+
+	// get unique letters from key
+	seen := make(map[rune]bool)
+	uniqueKey, keyIdx := [25]rune{}, 0
+	for _, r := range key {
+		if !runes.IsLetter(r) || r == 'j' || r == 'J' {
+			continue
+		}
+		ur := runes.ToUpper(r)
+		if seen[ur] {
+			continue
+		}
+		uniqueKey[keyIdx] = ur
+		seen[ur] = true
+		keyIdx++
+	}
+
+	// add the rest of the alphabet (excepting already used letters)
+	for _, r := range alphabet {
+		if seen[r] {
+			continue
+		}
+		uniqueKey[keyIdx] = r
+		keyIdx++
+	}
+
+	keyIdx = 0
+	// write the resulting key into the keyblock
+	for row := 0; row < 5; row++ {
+		kb.block[row] = [5]rune{}
+		for col := 0; col < 5; col++ {
+			kb.block[row][col] = uniqueKey[keyIdx]
+			kb.lookup[uniqueKey[keyIdx]] = location{row, col}
+			keyIdx++
+		}
+	}
+
+	return kb
 }
