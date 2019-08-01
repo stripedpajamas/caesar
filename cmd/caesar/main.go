@@ -20,11 +20,11 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "cipher, c",
-			Value: "the cipher to use (one of caesar, playfair)",
+			Usage: "the cipher to use (one of caesar, playfair)",
 		},
 		cli.StringFlag{
 			Name:  "key, k",
-			Value: "m",
+			Usage: "the key to encrypt/decrypt with",
 		},
 		cli.StringFlag{
 			Name:  "text, t",
@@ -40,9 +40,9 @@ func main() {
 			Action: func(c *cli.Context) error {
 				return handle(
 					"encrypt",
-					strings.ToLower(c.String("cipher")),
-					c.String("text"),
-					c.String("key"),
+					c.GlobalString("cipher"),
+					c.GlobalString("text"),
+					c.GlobalString("key"),
 				)
 			},
 		},
@@ -51,7 +51,12 @@ func main() {
 			Aliases: []string{"d"},
 			Usage:   "decrypt text",
 			Action: func(c *cli.Context) error {
-				return nil
+				return handle(
+					"decrypt",
+					c.GlobalString("cipher"),
+					c.GlobalString("text"),
+					c.GlobalString("key"),
+				)
 			},
 		},
 	}
