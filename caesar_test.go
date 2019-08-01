@@ -7,7 +7,7 @@ import (
 	"github.com/stripedpajamas/caesar"
 )
 
-func TestEncrypt(t *testing.T) {
+func TestCaesarEncrypt(t *testing.T) {
 	c := caesar.Caesar{}
 	testCases := []struct {
 		input       string
@@ -38,7 +38,7 @@ func TestEncrypt(t *testing.T) {
 	}
 }
 
-func TestDecrypt(t *testing.T) {
+func TestCaesarDecrypt(t *testing.T) {
 	c := caesar.Caesar{}
 	testCases := []struct {
 		input       string

@@ -1,14 +1,14 @@
-package playfair_test
+package caesar_test
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/stripedpajamas/caesar/playfair"
+	"github.com/stripedpajamas/caesar"
 )
 
-func TestEncrypt(t *testing.T) {
-	pf := playfair.Playfair{}
+func TestPlayfairEncrypt(t *testing.T) {
+	pf := caesar.Playfair{}
 	// example from https://en.wikipedia.org/wiki/Playfair_cipher#Example
 	testCases := []struct {
 		input       string
@@ -49,8 +49,8 @@ func TestEncrypt(t *testing.T) {
 	}
 }
 
-func TestDecrypt(t *testing.T) {
-	pf := playfair.Playfair{}
+func TestPlayfairDecrypt(t *testing.T) {
+	pf := caesar.Playfair{}
 	testCases := []struct {
 		input       string
 		key         string

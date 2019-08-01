@@ -1,4 +1,4 @@
-package playfair
+package caesar
 
 import (
 	"errors"
@@ -28,22 +28,22 @@ type location struct {
 // Encrypt constructs a playfair alphabet from key,
 // and then encrypts plaintext using it
 func (pf Playfair) Encrypt(plaintext string, key string) (string, error) {
-	kb := newKeyblock(key)
-	pt := unrollPlaintext(plaintext)
-	return process(pt, kb, false), nil
+	kb := pf.newKeyblock(key)
+	pt := pf.unrollPlaintext(plaintext)
+	return pf.process(pt, kb, false), nil
 }
 
 // Decrypt constructs a playfair alphabet from key,
 // and then decrypts ciphertext using it
 func (pf Playfair) Decrypt(ciphertext string, key string) (string, error) {
-	kb := newKeyblock(key)
+	kb := pf.newKeyblock(key)
 	if len(ciphertext)%2 != 0 {
 		return "", errors.New("invalid ciphertext; length not even")
 	}
-	return process(ciphertext, kb, true), nil
+	return pf.process(ciphertext, kb, true), nil
 }
 
-func process(in string, kb *keyblock, reverse bool) string {
+func (pf Playfair) process(in string, kb *keyblock, reverse bool) string {
 	var out strings.Builder
 	for i := 0; i < len(in); i += 2 {
 		a, b := rune(in[i]), rune(in[i+1])
@@ -59,7 +59,7 @@ func process(in string, kb *keyblock, reverse bool) string {
 // break message into digrams;
 // pad repeat digrams;
 // pad incomplete digrams
-func unrollPlaintext(plaintext string) string {
+func (pf Playfair) unrollPlaintext(plaintext string) string {
 	// for any letter in pt, if the next letter is same,
 	// add an x between current and next and continue processing
 	var out strings.Builder
@@ -102,7 +102,7 @@ func unrollPlaintext(plaintext string) string {
 	return out.String()
 }
 
-func newKeyblock(key string) *keyblock {
+func (pf Playfair) newKeyblock(key string) *keyblock {
 	kb := new(keyblock)
 	kb.block = [5][5]rune{}
 	kb.lookup = make(map[rune]location)

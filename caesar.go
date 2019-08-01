@@ -16,24 +16,24 @@ type Caesar struct{}
 // Encrypt converts alphabetic characters to their down-shifted
 // values based on the key parameter (e.g. a shifted 1 = b)
 func (c Caesar) Encrypt(plaintext string, key string) (string, error) {
-	parsedKey, err := parseKey(key)
+	parsedKey, err := c.parseKey(key)
 	if err != nil {
 		return "", err
 	}
-	return process(plaintext, parsedKey%26), nil
+	return c.process(plaintext, parsedKey%26), nil
 }
 
 // Decrypt converts alphabetic characters to their up-shifted
 // values based on the key parameter (e.g. a shifted 1 = z)
 func (c Caesar) Decrypt(ciphertext string, key string) (string, error) {
-	parsedKey, err := parseKey(key)
+	parsedKey, err := c.parseKey(key)
 	if err != nil {
 		return "", err
 	}
-	return process(ciphertext, -1*(parsedKey%26)), nil
+	return c.process(ciphertext, -1*(parsedKey%26)), nil
 }
 
-func parseKey(input string) (int, error) {
+func (c Caesar) parseKey(input string) (int, error) {
 	if len(input) < 1 {
 		return 0, errors.New("key must be a letter or a number")
 	}
@@ -51,11 +51,11 @@ func parseKey(input string) (int, error) {
 	return int(head - 97), nil
 }
 
-func process(input string, shiftVal int) string {
+func (c Caesar) process(input string, shiftVal int) string {
 	var out strings.Builder
 	for _, r := range input {
 		if runes.IsLetter(r) {
-			out.WriteRune(shift(r, shiftVal))
+			out.WriteRune(c.shift(r, shiftVal))
 		} else {
 			out.WriteRune(r)
 		}
@@ -63,7 +63,7 @@ func process(input string, shiftVal int) string {
 	return out.String()
 }
 
-func shift(r rune, n int) rune {
+func (c Caesar) shift(r rune, n int) rune {
 	var top, bottom rune
 	if runes.IsLower(r) {
 		top = runes.LowerMax

@@ -1,4 +1,4 @@
-package cipher
+package caesar
 
 // Cipher represents an old school cipher
 // with encryption and decryption methods

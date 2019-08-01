@@ -7,8 +7,6 @@ import (
 	"strings"
 
 	"github.com/stripedpajamas/caesar"
-	"github.com/stripedpajamas/caesar/cipher"
-	"github.com/stripedpajamas/caesar/playfair"
 	"github.com/urfave/cli"
 )
 
@@ -68,12 +66,12 @@ func main() {
 }
 
 func handle(operation, cipherType, input, key string) error {
-	var c cipher.Cipher
+	var c caesar.Cipher
 	switch strings.ToLower(cipherType) {
 	case "caesar":
 		c = caesar.Caesar{}
 	case "playfair":
-		c = playfair.Playfair{}
+		c = caesar.Playfair{}
 	}
 
 	var output string
@@ -93,11 +91,11 @@ func handle(operation, cipherType, input, key string) error {
 	return nil
 }
 
-func encrypt(cipher cipher.Cipher, plaintext, key string) (string, error) {
+func encrypt(cipher caesar.Cipher, plaintext, key string) (string, error) {
 	return cipher.Encrypt(plaintext, key)
 }
 
-func decrypt(cipher cipher.Cipher, ciphertext, key string) (string, error) {
+func decrypt(cipher caesar.Cipher, ciphertext, key string) (string, error) {
 	return cipher.Decrypt(ciphertext, key)
 }
 
