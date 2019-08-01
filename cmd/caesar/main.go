@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"os"
@@ -66,21 +67,18 @@ func main() {
 }
 
 func handle(operation, cipherType, input, key string) error {
-	var c caesar.Cipher
-	switch strings.ToLower(cipherType) {
-	case "caesar":
-		c = caesar.Caesar{}
-	case "playfair":
-		c = caesar.Playfair{}
+	cipher, err := getCipher(cipherType)
+
+	if err != nil {
+		return err
 	}
 
 	var output string
-	var err error
 	switch operation {
 	case "encrypt":
-		output, err = encrypt(c, input, key)
+		output, err = encrypt(cipher, input, key)
 	case "decrypt":
-		output, err = decrypt(c, input, key)
+		output, err = decrypt(cipher, input, key)
 	}
 
 	if err != nil {
@@ -89,6 +87,16 @@ func handle(operation, cipherType, input, key string) error {
 
 	print(output)
 	return nil
+}
+
+func getCipher(cipher string) (caesar.Cipher, error) {
+	switch strings.ToLower(cipher) {
+	case "caesar":
+		return caesar.Caesar{}, nil
+	case "playfair":
+		return caesar.Playfair{}, nil
+	}
+	return nil, errors.New("unrecognized cipher type")
 }
 
 func encrypt(cipher caesar.Cipher, plaintext, key string) (string, error) {
