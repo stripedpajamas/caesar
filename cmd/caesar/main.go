@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"log"
 	"os"
-	"strconv"
-	"strings"
 
 	"github.com/stripedpajamas/caesar"
 	"github.com/urfave/cli"
@@ -60,25 +58,11 @@ func main() {
 }
 
 func encrypt(c *cli.Context) error {
-	fmt.Println(caesar.Encrypt(c.String("text"), parseKey(c.String("key"))))
+	fmt.Println(caesar.Encrypt(c.String("text"), c.String("key")))
 	return nil
 }
 
 func decrypt(c *cli.Context) error {
-	fmt.Println(caesar.Decrypt(c.String("text"), parseKey(c.String("key"))))
+	fmt.Println(caesar.Decrypt(c.String("text"), c.String("key")))
 	return nil
-}
-
-func parseKey(input string) int {
-	if len(input) < 1 {
-		log.Fatal("key must be a letter or a number")
-	}
-	k, err := strconv.Atoi(input)
-	if err == nil {
-		// input is a number
-		return k
-	}
-
-	// input is a letter
-	return int(strings.ToLower(input)[0] - 97)
 }
