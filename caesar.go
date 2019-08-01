@@ -8,9 +8,14 @@ import (
 	"github.com/stripedpajamas/caesar/runes"
 )
 
+// Caesar represents the classic Caesar cipher
+// and conforms to the Cipher interface
+// https://en.wikipedia.org/wiki/Caesar_cipher
+type Caesar struct{}
+
 // Encrypt converts alphabetic characters to their down-shifted
 // values based on the key parameter (e.g. a shifted 1 = b)
-func Encrypt(plaintext string, key string) (string, error) {
+func (c Caesar) Encrypt(plaintext string, key string) (string, error) {
 	parsedKey, err := parseKey(key)
 	if err != nil {
 		return "", err
@@ -20,7 +25,7 @@ func Encrypt(plaintext string, key string) (string, error) {
 
 // Decrypt converts alphabetic characters to their up-shifted
 // values based on the key parameter (e.g. a shifted 1 = z)
-func Decrypt(ciphertext string, key string) (string, error) {
+func (c Caesar) Decrypt(ciphertext string, key string) (string, error) {
 	parsedKey, err := parseKey(key)
 	if err != nil {
 		return "", err

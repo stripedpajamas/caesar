@@ -1,6 +1,7 @@
 package playfair
 
 import (
+	"errors"
 	"strings"
 
 	"github.com/stripedpajamas/caesar/runes"
@@ -10,6 +11,10 @@ const xPad = 'X'
 const qPad = 'Q'
 const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
 
+// Playfair represents the Playfair cipher
+// and conforms to the Cipher interface
+// https://en.wikipedia.org/wiki/Playfair_cipher
+type Playfair struct{}
 type keyblock struct {
 	block  [5][5]rune
 	lookup map[rune]location
@@ -20,55 +25,22 @@ type location struct {
 	col int
 }
 
-// - If the letters appear on the same row of your table,
-//   replace them with the letters to their immediate right respectively
-// - If the letters appear on the same column of your table,
-//   replace them with the letters immediately below respectively
-// - If the letters are not on the same row or column,
-//   replace them with the letters on the same row respectively
-//   but at the other pair of corners of the rectangle defined by the original pair.
-//   The order is important – the first letter of the encrypted pair is the
-//   one that lies on the same row as the first letter of the plaintext pair.
-func (kb *keyblock) getCorrespondingPair(a, b rune, reverse bool) (x, y rune) {
-	var diff int
-	if reverse {
-		diff = -1
-	} else {
-		diff = 1
-	}
-	aLoc, bLoc := kb.lookup[a], kb.lookup[b]
-	var xLoc, yLoc location
-	if aLoc.row == bLoc.row {
-		xLoc = location{row: aLoc.row, col: (aLoc.col + diff + 5) % 5}
-		yLoc = location{row: bLoc.row, col: (bLoc.col + diff + 5) % 5}
-	} else if aLoc.col == bLoc.col {
-		xLoc = location{row: (aLoc.row + diff + 5) % 5, col: aLoc.col}
-		yLoc = location{row: (bLoc.row + diff + 5) % 5, col: bLoc.col}
-	} else {
-		xLoc = location{row: aLoc.row, col: bLoc.col}
-		yLoc = location{row: bLoc.row, col: aLoc.col}
-	}
-	x = kb.block[xLoc.row][xLoc.col]
-	y = kb.block[yLoc.row][yLoc.col]
-	return
-}
-
 // Encrypt constructs a playfair alphabet from key,
 // and then encrypts plaintext using it
-func Encrypt(plaintext string, key string) string {
+func (pf Playfair) Encrypt(plaintext string, key string) (string, error) {
 	kb := newKeyblock(key)
 	pt := unrollPlaintext(plaintext)
-	return process(pt, kb, false)
+	return process(pt, kb, false), nil
 }
 
 // Decrypt constructs a playfair alphabet from key,
 // and then decrypts ciphertext using it
-func Decrypt(ciphertext string, key string) string {
+func (pf Playfair) Decrypt(ciphertext string, key string) (string, error) {
 	kb := newKeyblock(key)
 	if len(ciphertext)%2 != 0 {
-		panic("invalid ciphertext; length not even")
+		return "", errors.New("invalid ciphertext; length not even")
 	}
-	return process(ciphertext, kb, true)
+	return process(ciphertext, kb, true), nil
 }
 
 func process(in string, kb *keyblock, reverse bool) string {
@@ -172,4 +144,37 @@ func newKeyblock(key string) *keyblock {
 	}
 
 	return kb
+}
+
+// - If the letters appear on the same row of your table,
+//   replace them with the letters to their immediate right respectively
+// - If the letters appear on the same column of your table,
+//   replace them with the letters immediately below respectively
+// - If the letters are not on the same row or column,
+//   replace them with the letters on the same row respectively
+//   but at the other pair of corners of the rectangle defined by the original pair.
+//   The order is important – the first letter of the encrypted pair is the
+//   one that lies on the same row as the first letter of the plaintext pair.
+func (kb *keyblock) getCorrespondingPair(a, b rune, reverse bool) (x, y rune) {
+	var diff int
+	if reverse {
+		diff = -1
+	} else {
+		diff = 1
+	}
+	aLoc, bLoc := kb.lookup[a], kb.lookup[b]
+	var xLoc, yLoc location
+	if aLoc.row == bLoc.row {
+		xLoc = location{row: aLoc.row, col: (aLoc.col + diff + 5) % 5}
+		yLoc = location{row: bLoc.row, col: (bLoc.col + diff + 5) % 5}
+	} else if aLoc.col == bLoc.col {
+		xLoc = location{row: (aLoc.row + diff + 5) % 5, col: aLoc.col}
+		yLoc = location{row: (bLoc.row + diff + 5) % 5, col: bLoc.col}
+	} else {
+		xLoc = location{row: aLoc.row, col: bLoc.col}
+		yLoc = location{row: bLoc.row, col: aLoc.col}
+	}
+	x = kb.block[xLoc.row][xLoc.col]
+	y = kb.block[yLoc.row][yLoc.col]
+	return
 }

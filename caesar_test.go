@@ -8,6 +8,7 @@ import (
 )
 
 func TestEncrypt(t *testing.T) {
+	c := caesar.Caesar{}
 	testCases := []struct {
 		input       string
 		key         string
@@ -25,7 +26,7 @@ func TestEncrypt(t *testing.T) {
 	}
 
 	for idx, tc := range testCases {
-		actual, err := caesar.Encrypt(tc.input, tc.key)
+		actual, err := c.Encrypt(tc.input, tc.key)
 		if tc.expectedErr && err == nil {
 			fmt.Printf("(en) test %d failed: wanted error, got success", idx)
 			t.Fail()
@@ -38,6 +39,7 @@ func TestEncrypt(t *testing.T) {
 }
 
 func TestDecrypt(t *testing.T) {
+	c := caesar.Caesar{}
 	testCases := []struct {
 		input       string
 		key         string
@@ -55,7 +57,7 @@ func TestDecrypt(t *testing.T) {
 	}
 
 	for idx, tc := range testCases {
-		actual, err := caesar.Decrypt(tc.input, tc.key)
+		actual, err := c.Decrypt(tc.input, tc.key)
 		if tc.expectedErr && err == nil {
 			fmt.Printf("(de) test %d failed: wanted error, got success", idx)
 			t.Fail()
