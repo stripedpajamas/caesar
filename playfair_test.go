@@ -75,6 +75,12 @@ func TestPlayfairDecrypt(t *testing.T) {
 			"HIDETHEGOLDINTHETREXESTUMP",
 			false,
 		},
+		{
+			"BMODZBXDNABEKUDMUIXMMOUVI", // odd length ciphertext
+			"playfair example",
+			"",
+			true,
+		},
 	}
 
 	for idx, tc := range testCases {
