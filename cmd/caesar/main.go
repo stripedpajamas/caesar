@@ -29,6 +29,11 @@ func main() {
 			Name:  "text, t",
 			Usage: "the text to encrypt",
 		},
+		cli.IntFlag{
+			Name:  "groups, g",
+			Value: 5,
+			Usage: "how many letters in each printed output group",
+		},
 	}
 
 	app.Commands = []cli.Command{
@@ -42,6 +47,7 @@ func main() {
 					c.GlobalString("cipher"),
 					c.GlobalString("text"),
 					c.GlobalString("key"),
+					c.GlobalInt("groups"),
 				)
 			},
 		},
@@ -55,6 +61,7 @@ func main() {
 					c.GlobalString("cipher"),
 					c.GlobalString("text"),
 					c.GlobalString("key"),
+					0,
 				)
 			},
 		},
@@ -66,7 +73,7 @@ func main() {
 	}
 }
 
-func handle(operation, cipherType, input, key string) error {
+func handle(operation, cipherType, input, key string, groups int) error {
 	cipher, err := getCipher(cipherType)
 
 	if err != nil {
@@ -85,7 +92,7 @@ func handle(operation, cipherType, input, key string) error {
 		return err
 	}
 
-	print(output)
+	print(output, groups)
 	return nil
 }
 
@@ -109,7 +116,17 @@ func decrypt(cipher caesar.Cipher, ciphertext, key string) (string, error) {
 	return cipher.Decrypt(ciphertext, key)
 }
 
-func print(output string) {
-	// TODO accept print options and apply them here
-	fmt.Println(output)
+func print(output string, groups int) {
+	if groups == 0 {
+		fmt.Println(output)
+		return
+	}
+	var out strings.Builder
+	for idx, r := range output {
+		if idx != 0 && idx%groups == 0 {
+			out.WriteRune(' ')
+		}
+		out.WriteRune(r)
+	}
+	fmt.Println(out.String())
 }

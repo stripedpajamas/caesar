@@ -8,6 +8,8 @@ $ caesar help
 
 generally the syntax is `caesar -c <cipher> -k <key> -t <text> <encrypt|decrypt>`
 
+optionally you can also provide a `--groups` or `-g` parameter to specify how the output should be grouped. the default value is 5. groups setting is ignored for decrypt operations.
+
 ```shell
 $ caesar -c caesar -k m -t "peter" encrypt
 BQFQD
@@ -15,14 +17,18 @@ $ caesar -c caesar -k m -t "BQFQD" decrypt
 peter
 
 $ caesar -c playfair -k secret -t "peter" encrypt
-OCSCCY
+OCSCC Y
 $ caesar -c playfair -k secret -t "OCSCCY" decrypt
 PETERX
 
 $ caesar -k hotsauce -t "let's eat some cheerios" -c vigenere encrypt
-SSMKEUVWVAXUHYGVPCL
+SSMKE UVWVA XUHYG VPCL
 $ caesar -k hotsauce -t "SSMKEUVWVAXUHYGVPCL" -c vigenere decrypt
 LETSEATSOMECHEERIOS
+
+# group output in chunks of 10 chars
+$ caesar -g 10 -c caesar -k m -t "mary had a little lamb whose fleece was white as snow" encrypt
+YMDKTMPMXU FFXQXMYNIT AEQRXQQOQI MEITUFQMEE ZAI
 ```
 
 
