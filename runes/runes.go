@@ -36,3 +36,11 @@ func ToUpper(r rune) rune {
 	}
 	return r - 32
 }
+
+// ToUpper returns the lowercase value of the rune passed in
+func ToLower(r rune) rune {
+	if IsLower(r) {
+		return r
+	}
+	return r + 32
+}
