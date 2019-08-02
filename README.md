@@ -14,7 +14,7 @@ optionally you can also provide a `--groups` or `-g` parameter to specify how th
 $ caesar -c caesar -k m -t "peter" encrypt
 BQFQD
 $ caesar -c caesar -k m -t "BQFQD" decrypt
-peter
+PETER
 
 $ caesar -c playfair -k secret -t "peter" encrypt
 OCSCC Y
