@@ -54,11 +54,11 @@ func (c Caesar) parseKey(input string) (int, error) {
 func (c Caesar) process(input string, shiftVal int) string {
 	var out strings.Builder
 	for _, r := range input {
-		if runes.IsLetter(r) {
-			out.WriteRune(c.shift(r, shiftVal))
-		} else {
-			out.WriteRune(r)
+		if !runes.IsLetter(r) {
+			// skip non-letters
+			continue
 		}
+		out.WriteRune(runes.ToUpper(c.shift(r, shiftVal)))
 	}
 	return out.String()
 }

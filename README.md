@@ -10,8 +10,8 @@ generally the syntax is `caesar -c <cipher> -k <key> -t <text> <encrypt|decrypt>
 
 ```shell
 $ caesar -c caesar -k m -t "peter" encrypt
-bqfqd
-$ caesar -c caesar -k m -t "bqfqd" decrypt
+BQFQD
+$ caesar -c caesar -k m -t "BQFQD" decrypt
 peter
 
 $ caesar -c playfair -k secret -t "peter" encrypt
@@ -29,9 +29,12 @@ LETSEATSOMECHEERIOS
 ciphers implemented:
 - caesar https://en.wikipedia.org/wiki/Caesar_cipher
 - playfair https://en.wikipedia.org/wiki/Playfair_cipher
+- vigenere https://en.wikipedia.org/wiki/Vigenère_cipher
+
+generally all the ciphers operate on english alphabetic letters (a-z). plaintext and keys are both specified as letters (although a number works for the caesar cipher as well, see below).
 
 ### caesar cipher
-the key can be a letter or a number. the letter _x_ is interpreted as _a = x_ for the shift. the number _n_ is interpreted as _shift the alphabet n places_. concretly, this means a = 0, b = 1, ..., z = 25. any number provided is wrapped around mod 26 and with any multi-letter key all but the first letter is ignored.
+the key can be a letter or a number. the letter _x_ is interpreted as _a = x_ for the shift. the number _n_ is interpreted as _shift the alphabet n places_. concretely, this means a = 0, b = 1, ..., z = 25. any number provided is wrapped around mod 26 and with any multi-letter key all but the first letter is ignored.
 
 ### playfair cipher
 the key should be a keyword (anything else would be equivalent encrypting without a key). `j` is merged with `i`, so decrypting an encryption of "Joel" will result in "Ioel". odd-length plaintext and double-letters are padded with X, unless the double letter is X, then we pad with Q.

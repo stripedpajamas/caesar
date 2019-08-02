@@ -16,22 +16,22 @@ type testCase struct {
 
 func TestCaesar(t *testing.T) {
 	encryptionCases := []testCase{
-		{"abc", "1", "bcd", false},
-		{"zzz", "1", "aaa", false},
-		{"aZf", "1", "bAg", false},
-		{"123", "1", "123", false},
-		{"abc", "26", "abc", false},
-		{"abc", "27", "bcd", false},
+		{"abc", "1", "BCD", false},
+		{"zzz", "1", "AAA", false},
+		{"aZf", "1", "BAG", false},
+		{"123", "1", "", false},
+		{"abc", "26", "ABC", false},
+		{"abc", "27", "BCD", false},
 		{"abc", "$", "", true},
 		{"abc", "", "", true},
 	}
 	decryptionCases := []testCase{
-		{"bcd", "1", "abc", false},
-		{"zzz", "1", "yyy", false},
-		{"aZf", "1", "zYe", false},
-		{"123", "1", "123", false},
-		{"abc", "26", "abc", false},
-		{"abc", "27", "zab", false},
+		{"bcd", "1", "ABC", false},
+		{"zzz", "1", "YYY", false},
+		{"aZf", "1", "ZYE", false},
+		{"123", "1", "", false},
+		{"abc", "26", "ABC", false},
+		{"abc", "27", "ZAB", false},
 		{"abc", "$", "", true},
 		{"abc", "", "", true},
 	}
