@@ -7,14 +7,15 @@ import (
 	"github.com/stripedpajamas/caesar"
 )
 
-func TestCaesarEncrypt(t *testing.T) {
-	c := caesar.Caesar{}
-	testCases := []struct {
-		input       string
-		key         string
-		expected    string
-		expectedErr bool
-	}{
+type testCase struct {
+	input       string
+	key         string
+	expected    string
+	expectedErr bool
+}
+
+func TestCaesar(t *testing.T) {
+	encryptionCases := []testCase{
 		{"abc", "1", "bcd", false},
 		{"zzz", "1", "aaa", false},
 		{"aZf", "1", "bAg", false},
@@ -24,28 +25,7 @@ func TestCaesarEncrypt(t *testing.T) {
 		{"abc", "$", "", true},
 		{"abc", "", "", true},
 	}
-
-	for idx, tc := range testCases {
-		actual, err := c.Encrypt(tc.input, tc.key)
-		if tc.expectedErr && err == nil {
-			fmt.Printf("(en) test %d failed: wanted error, got success", idx)
-			t.Fail()
-		}
-		if actual != tc.expected {
-			fmt.Printf("(en) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)
-			t.Fail()
-		}
-	}
-}
-
-func TestCaesarDecrypt(t *testing.T) {
-	c := caesar.Caesar{}
-	testCases := []struct {
-		input       string
-		key         string
-		expected    string
-		expectedErr bool
-	}{
+	decryptionCases := []testCase{
 		{"bcd", "1", "abc", false},
 		{"zzz", "1", "yyy", false},
 		{"aZf", "1", "zYe", false},
@@ -55,15 +35,76 @@ func TestCaesarDecrypt(t *testing.T) {
 		{"abc", "$", "", true},
 		{"abc", "", "", true},
 	}
+	runTests(t, caesar.Caesar{}, encryptionCases, decryptionCases)
+}
 
-	for idx, tc := range testCases {
-		actual, err := c.Decrypt(tc.input, tc.key)
+func TestPlayfair(t *testing.T) {
+	encryptionCases := []testCase{
+		{"abx", "playfair example", "PDGW", false},
+		{"abc", "playfair example", "PDGR", false},
+		{
+			"Hide the gold in the tree stump",
+			"playfair example",
+			"BMODZBXDNABEKUDMUIXMMOUVIF",
+			false,
+		},
+	}
+
+	decryptionCases := []testCase{
+		{"PDGW", "playfair example", "ABXQ", false},
+		{"PDGR", "playfair example", "ABCX", false},
+		{
+			"BMODZBXDNABEKUDMUIXMMOUVIF",
+			"playfair example",
+			"HIDETHEGOLDINTHETREXESTUMP",
+			false,
+		},
+		{
+			"BMODZBXDNABEKUDMUIXMMOUVI", // odd length ciphertext
+			"playfair example",
+			"",
+			true,
+		},
+	}
+
+	runTests(t, caesar.Playfair{}, encryptionCases, decryptionCases)
+}
+
+func TestVigenere(t *testing.T) {
+	encryptionCases := []testCase{
+		{"attack at dawn", "lemon", "LXFOPVEFRNHR", false},
+		{"CRYPTO IS SHORT FOR CRYPTOGRAPHY", "ABCD", "CSASTPKVSIQUTGQUCSASTPIUAQJB", false},
+	}
+
+	decryptionCases := []testCase{
+		{"LXFOPVEFRNHR", "lemon", "ATTACKATDAWN", false},
+		{"CSASTPKVSIQUTGQUCSASTPIUAQJB", "ABCD", "CRYPTOISSHORTFORCRYPTOGRAPHY", false},
+	}
+
+	runTests(t, caesar.Vigenere{}, encryptionCases, decryptionCases)
+}
+
+func runTests(t *testing.T, c caesar.Cipher, encryptionCases, decryptionCases []testCase) {
+	for idx, tc := range encryptionCases {
+		actual, err := c.Encrypt(tc.input, tc.key)
 		if tc.expectedErr && err == nil {
-			fmt.Printf("(de) test %d failed: wanted error, got success", idx)
+			fmt.Printf("(en) test %d failed: wanted error, got success", idx)
 			t.Fail()
 		}
 		if actual != tc.expected {
-			fmt.Printf("(de) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)
+			fmt.Printf("(encrypt) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)
+			t.Fail()
+		}
+	}
+
+	for idx, tc := range decryptionCases {
+		actual, err := c.Decrypt(tc.input, tc.key)
+		if tc.expectedErr && err == nil {
+			fmt.Printf("(decrypt) test %d failed: wanted error, got success", idx)
+			t.Fail()
+		}
+		if actual != tc.expected {
+			fmt.Printf("(decrypt) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)
 			t.Fail()
 		}
 	}
