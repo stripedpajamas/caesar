@@ -18,6 +18,11 @@ $ caesar -c playfair -k secret -t "peter" encrypt
 OCSCCY
 $ caesar -c playfair -k secret -t "OCSCCY" decrypt
 PETERX
+
+$ caesar -k hotsauce -t "let's eat some cheerios" -c vigenere encrypt
+SSMKEUVWVAXUHYGVPCL
+$ caesar -k hotsauce -t "SSMKEUVWVAXUHYGVPCL" -c vigenere decrypt
+LETSEATSOMECHEERIOS
 ```
 
 
@@ -30,6 +35,9 @@ the key can be a letter or a number. the letter _x_ is interpreted as _a = x_ fo
 
 ### playfair cipher
 the key should be a keyword (anything else would be equivalent encrypting without a key). `j` is merged with `i`, so decrypting an encryption of "Joel" will result in "Ioel". odd-length plaintext and double-letters are padded with X, unless the double letter is X, then we pad with Q.
+
+### vigenere cipher
+the key should be a keyword (anything else would be equivalent encrypting without a key). non-alphabetic characters are ignored in the plaintext, and throw errors if present in the key.
 
 # license
 MIT

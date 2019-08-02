@@ -19,7 +19,7 @@ func main() {
 	app.Flags = []cli.Flag{
 		cli.StringFlag{
 			Name:  "cipher, c",
-			Usage: "the cipher to use (one of caesar, playfair)",
+			Usage: "the cipher to use (one of caesar, playfair, vigenere)",
 		},
 		cli.StringFlag{
 			Name:  "key, k",
@@ -95,6 +95,8 @@ func getCipher(cipher string) (caesar.Cipher, error) {
 		return caesar.Caesar{}, nil
 	case "playfair":
 		return caesar.Playfair{}, nil
+	case "vigenere":
+		return caesar.Vigenere{}, nil
 	}
 	return nil, errors.New("unrecognized cipher type")
 }
