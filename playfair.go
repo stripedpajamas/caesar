@@ -36,14 +36,34 @@ func (pf Playfair) Encrypt(plaintext string, key string) (string, error) {
 // Decrypt constructs a playfair alphabet from key,
 // and then decrypts ciphertext using it
 func (pf Playfair) Decrypt(ciphertext string, key string) (string, error) {
-	kb := pf.newKeyblock(key)
-	if len(ciphertext)%2 != 0 {
-		return "", errors.New("invalid ciphertext; length not even")
+	if err := validateCiphertext(ciphertext); err != nil {
+		return "", err
 	}
+	kb := pf.newKeyblock(key)
 	return pf.process(ciphertext, kb, true), nil
 }
 
-func (pf Playfair) process(in string, kb *keyblock, reverse bool) string {
+func validateCiphertext(ciphertext string) error {
+	sum := 0
+	for _, r := range ciphertext {
+		if runes.IsLetter(r) {
+			sum++
+		}
+	}
+	if sum%2 != 0 {
+		return errors.New("invalid ciphertext; length not even")
+	}
+	return nil
+}
+
+func (pf Playfair) process(input string, kb *keyblock, reverse bool) string {
+	var tmp strings.Builder
+	for _, r := range input {
+		if runes.IsLetter(r) {
+			tmp.WriteRune(r)
+		}
+	}
+	in := tmp.String()
 	var out strings.Builder
 	for i := 0; i < len(in); i += 2 {
 		a, b := rune(in[i]), rune(in[i+1])

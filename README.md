@@ -23,7 +23,7 @@ PETERX
 
 $ caesar -k hotsauce -t "let's eat some cheerios" -c vigenere encrypt
 SSMKE UVWVA XUHYG VPCL
-$ caesar -k hotsauce -t "SSMKEUVWVAXUHYGVPCL" -c vigenere decrypt
+$ caesar -k hotsauce -t "SSMKE UVWVA XUHYG VPCL" -c vigenere decrypt
 LETSEATSOMECHEERIOS
 
 # group output in chunks of 10 chars
