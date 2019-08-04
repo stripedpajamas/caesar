@@ -87,6 +87,25 @@ func TestVigenere(t *testing.T) {
 	runTests(t, caesar.Vigenere{}, encryptionCases, decryptionCases)
 }
 
+func TestADFGX(t *testing.T) {
+	encryptionCases := []testCase{
+		{"attack at once", "btalpdhozkqfvsngicuxmrewy;cargo", "FAXDFADDDGDGFFFAFAXAFAFX", false},
+		{"attack at once!!!", "btalpdhozkqfvsngicuxmrewy;cargo", "FAXDFADDDGDGFFFAFAXAFAFX", false},
+		{"asdf", "onlyonekey", "", true},
+		{"asdf", "onlyonekey;", "", true},
+		{"asdf", "good;666", "", true},
+	}
+
+	decryptionCases := []testCase{
+		{"FAXDFADDDGDGFFFAFAXAFAFX", "btalpdhozkqfvsngicuxmrewy;cargo", "attack at once", false},
+		{"asdf", "onlyonekey", "", true},
+		{"asdf", "onlyonekey;", "", true},
+		{"asdf", "good;666", "", true},
+	}
+
+	runTests(t, caesar.ADFGX{}, encryptionCases, decryptionCases)
+}
+
 func runTests(t *testing.T, c caesar.Cipher, encryptionCases, decryptionCases []testCase) {
 	for idx, tc := range encryptionCases {
 		actual, err := c.Encrypt(tc.input, tc.key)

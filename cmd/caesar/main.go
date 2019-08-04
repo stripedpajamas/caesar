@@ -126,9 +126,8 @@ func getCipher(cipher string) (caesar.Cipher, error) {
 func getText(initial string) (string, error) {
 	if initial == "" {
 		return readStdin()
-	} else {
-		return initial, nil
 	}
+	return initial, nil
 }
 
 func encrypt(cipher caesar.Cipher, plaintext, key string) (string, error) {
