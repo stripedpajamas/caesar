@@ -8,6 +8,8 @@ $ caesar help
 
 generally the syntax is `caesar -c <cipher> -k <key> -t <text> <encrypt|decrypt>`
 
+leave off `-t <text>` and caesar will read from stdin.
+
 optionally you can also provide a `--groups` or `-g` parameter to specify how the output should be grouped. the default value is 5. groups setting is ignored for decrypt operations.
 
 ```shell
@@ -21,14 +23,18 @@ OCSCC Y
 $ caesar -c playfair -k secret -t "OCSCCY" decrypt
 PETERX
 
-$ caesar -k hotsauce -t "let's eat some cheerios" -c vigenere encrypt
+$ caesar -c vigenere -k hotsauce -t "let's eat some cheerios" encrypt
 SSMKE UVWVA XUHYG VPCL
-$ caesar -k hotsauce -t "SSMKE UVWVA XUHYG VPCL" -c vigenere decrypt
+$ caesar -c vigenere -k hotsauce -t "SSM KEU VWV AXU HYG VPC L" decrypt
 LETSEATSOMECHEERIOS
 
 # group output in chunks of 10 chars
 $ caesar -g 10 -c caesar -k m -t "mary had a little lamb whose fleece was white as snow" encrypt
 YMDKTMPMXU FFXQXMYNIT AEQRXQQOQI MEITUFQMEE ZAI
+
+# read from stdin
+$ cat my_love_letter.txt | caesar -c caesar -k 5 encrypt
+NKDTZ WJWJF INSLY MNXYM FYXUW JYYDH TTQ
 ```
 
 
