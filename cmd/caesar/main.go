@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"errors"
 	"fmt"
 	"log"
@@ -73,7 +74,21 @@ func main() {
 	}
 }
 
-func handle(operation, cipherType, input, key string, groups int) error {
+func readStdin() (string, error) {
+	var out strings.Builder
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		out.WriteString(scanner.Text())
+	}
+	return out.String(), scanner.Err()
+}
+
+func handle(operation, cipherType, initialText, key string, groups int) error {
+	input, err := getText(initialText)
+	if err != nil {
+		return err
+	}
+
 	cipher, err := getCipher(cipherType)
 
 	if err != nil {
@@ -106,6 +121,14 @@ func getCipher(cipher string) (caesar.Cipher, error) {
 		return caesar.Vigenere{}, nil
 	}
 	return nil, errors.New("unrecognized cipher type")
+}
+
+func getText(initial string) (string, error) {
+	if initial == "" {
+		return readStdin()
+	} else {
+		return initial, nil
+	}
 }
 
 func encrypt(cipher caesar.Cipher, plaintext, key string) (string, error) {
