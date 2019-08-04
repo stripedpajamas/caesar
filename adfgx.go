@@ -23,9 +23,8 @@ func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
 
 // Decrypt operates on a ciphertext string and a key string
 // that consists of two keys delimited by a semicolon (;).
-// The function constructs an alphabet square from key 1,
-// and obtains substitution values from it. Then key 2 is used
-// to transpose the values into the finished plaintext.
+// The function first transposes the letters according to key2,
+// and then undoes the substitution using an alphabet square and key1.
 func (a ADFGX) Decrypt(plaintext, key string) (string, error) {
 	return "", nil
 }
