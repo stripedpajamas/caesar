@@ -110,8 +110,11 @@ func runTests(t *testing.T, c caesar.Cipher, encryptionCases, decryptionCases []
 	for idx, tc := range encryptionCases {
 		actual, err := c.Encrypt(tc.input, tc.key)
 		if tc.expectedErr && err == nil {
-			fmt.Printf("(en) test %d failed: wanted error, got success", idx)
+			fmt.Printf("(encrypt) test %d failed: wanted error, got success\n", idx)
 			t.Fail()
+		}
+		if !tc.expectedErr && err != nil {
+			fmt.Printf("(encrypt) test %d failed: %s\n", idx, err.Error())
 		}
 		if actual != tc.expected {
 			fmt.Printf("(encrypt) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)
@@ -122,8 +125,11 @@ func runTests(t *testing.T, c caesar.Cipher, encryptionCases, decryptionCases []
 	for idx, tc := range decryptionCases {
 		actual, err := c.Decrypt(tc.input, tc.key)
 		if tc.expectedErr && err == nil {
-			fmt.Printf("(decrypt) test %d failed: wanted error, got success", idx)
+			fmt.Printf("(decrypt) test %d failed: wanted error, got success\n", idx)
 			t.Fail()
+		}
+		if !tc.expectedErr && err != nil {
+			fmt.Printf("(decrypt) test %d failed: %s\n", idx, err.Error())
 		}
 		if actual != tc.expected {
 			fmt.Printf("(decrypt) test %d failed: wanted %s, got %s\n", idx, tc.expected, actual)

@@ -7,6 +7,8 @@ import (
 	"github.com/stripedpajamas/caesar/runes"
 )
 
+var adfgx = [5]string{"A", "D", "F", "G", "X"}
+
 // ADFGX represents the ADFGX cipher
 // and conforms to the Cipher interface
 // https://en.wikipedia.org/wiki/ADFGVX_cipher
@@ -18,7 +20,26 @@ type ADFGX struct{}
 // and obtains substitution values from it. Then key 2 is used
 // to transpose the values into the finished ciphertext.
 func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
-	return "", nil
+	k1, _, err := a.parseKeys(key)
+	if err != nil {
+		return "", err
+	}
+	kb := newKeyblock(k1)
+
+	var substitution strings.Builder
+	for _, r := range plaintext {
+		if !runes.IsLetter(r) {
+			continue
+		}
+		r, c, err := kb.getCoordinates(runes.ToUpper(r))
+		if err != nil {
+			// somehow a letter that isn't in the keyblock
+			// skip it
+			continue
+		}
+		substitution.WriteString(adfgx[r] + adfgx[c])
+	}
+	return substitution.String(), nil
 }
 
 // Decrypt operates on a ciphertext string and a key string

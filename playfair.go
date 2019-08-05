@@ -9,7 +9,6 @@ import (
 
 const xPad = 'X'
 const qPad = 'Q'
-const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
 
 // Playfair represents the Playfair cipher
 // and conforms to the Cipher interface

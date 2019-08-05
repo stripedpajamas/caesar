@@ -1,6 +1,12 @@
 package caesar
 
-import "github.com/stripedpajamas/caesar/runes"
+import (
+	"errors"
+
+	"github.com/stripedpajamas/caesar/runes"
+)
+
+const alphabet = "ABCDEFGHIKLMNOPQRSTUVWXYZ"
 
 type keyblock struct {
 	block  [5][5]rune
@@ -54,6 +60,14 @@ func newKeyblock(key string) *keyblock {
 	}
 
 	return kb
+}
+
+func (kb *keyblock) getCoordinates(r rune) (int, int, error) {
+	loc, found := kb.lookup[r]
+	if !found {
+		return 0, 0, errors.New("char not found in keyblock")
+	}
+	return loc.row, loc.col, nil
 }
 
 // Used by Playfair cipher
