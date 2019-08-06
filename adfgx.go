@@ -2,6 +2,7 @@ package caesar
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/stripedpajamas/caesar/runes"
@@ -20,7 +21,7 @@ type ADFGX struct{}
 // and obtains substitution values from it. Then key 2 is used
 // to transpose the values into the finished ciphertext.
 func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
-	k1, _, err := a.parseKeys(key)
+	k1, k2, err := a.parseKeys(key)
 	if err != nil {
 		return "", err
 	}
@@ -39,6 +40,8 @@ func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
 		}
 		substitution.WriteString(adfgx[r] + adfgx[c])
 	}
+
+	fmt.Println(newTranspositionBlock(substitution.String(), k2))
 	return substitution.String(), nil
 }
 
