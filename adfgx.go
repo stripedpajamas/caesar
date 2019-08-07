@@ -2,7 +2,6 @@ package caesar
 
 import (
 	"errors"
-	"fmt"
 	"strings"
 
 	"github.com/stripedpajamas/caesar/runes"
@@ -41,8 +40,8 @@ func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
 		substitution.WriteString(adfgx[r] + adfgx[c])
 	}
 
-	fmt.Println(newTranspositionBlock(substitution.String(), k2))
-	return substitution.String(), nil
+	tb := newTranspositionBlock(substitution.String(), k2)
+	return tb.columnsInorder(), nil
 }
 
 // Decrypt operates on a ciphertext string and a key string
