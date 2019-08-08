@@ -91,6 +91,7 @@ func TestADFGX(t *testing.T) {
 	encryptionCases := []testCase{
 		{"attack at once", "btalpdhozkqfvsngicuxmrewy;cargo", "FAXDFADDDGDGFFFAFAXAFAFX", false},
 		{"attack at once!!!", "btalpdhozkqfvsngicuxmrewy;cargo", "FAXDFADDDGDGFFFAFAXAFAFX", false},
+		{"hello world", "apple;book", "DAFFAGFDDDXFXXFAAXGD", false},
 		{"asdf", "onlyonekey", "", true},
 		{"asdf", "onlyonekey;", "", true},
 		{"asdf", "good;666", "", true},
@@ -98,6 +99,7 @@ func TestADFGX(t *testing.T) {
 
 	decryptionCases := []testCase{
 		{"FAXDFADDDGDGFFFAFAXAFAFX", "btalpdhozkqfvsngicuxmrewy;cargo", "ATTACKATONCE", false},
+		{"DAFFAGFDDDXFXXFAAXGD", "apple;book", "HELLOWORLD", false},
 		{"asdf", "onlyonekey", "", true},
 		{"asdf", "onlyonekey;", "", true},
 		{"asdf", "good;666", "", true},
