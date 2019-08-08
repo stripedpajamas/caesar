@@ -1,5 +1,7 @@
 package runes
 
+import "strings"
+
 // UpperMin is the lower bound of an uppercase alphabetic ASCII character
 const UpperMin = 'A'
 
@@ -43,4 +45,16 @@ func ToLower(r rune) rune {
 		return r
 	}
 	return r + 32
+}
+
+// Clean removes all non-letter runes from input
+func Clean(input string) string {
+	var out strings.Builder
+	for _, r := range input {
+		if !IsLetter(r) {
+			continue
+		}
+		out.WriteRune(r)
+	}
+	return out.String()
 }

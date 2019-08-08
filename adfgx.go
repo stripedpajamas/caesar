@@ -57,13 +57,14 @@ func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
 // The function first transposes the letters according to key2,
 // and then undoes the substitution using an alphabet square and key1.
 func (a ADFGX) Decrypt(ciphertext, key string) (string, error) {
+	input := runes.Clean(ciphertext)
 	k1, k2, err := a.parseKeys(key)
 	if err != nil {
 		return "", err
 	}
 
 	tb := newTranspositionBlock(k2)
-	unfranctionated := tb.detranspose(ciphertext)
+	unfranctionated := tb.detranspose(input)
 
 	if len(unfranctionated)%2 != 0 {
 		return "", errors.New("invalid ciphertext length")
@@ -89,27 +90,11 @@ func (a ADFGX) Decrypt(ciphertext, key string) (string, error) {
 }
 
 func (a ADFGX) parseKeys(input string) (string, string, error) {
-	split := strings.Split(input, ";")
+	split := strings.Split(input, ",")
 	if len(split) < 2 {
-		return "", "", errors.New("could not find two keys delimited by ; in key input")
+		return "", "", errors.New("could not find two keys delimited by , in key input")
 	}
-
-	var key1, key2 strings.Builder
-
-	for _, r := range split[0] {
-		if !runes.IsLetter(r) {
-			continue
-		}
-		key1.WriteRune(r)
-	}
-	for _, r := range split[1] {
-		if !runes.IsLetter(r) {
-			continue
-		}
-		key2.WriteRune(r)
-	}
-
-	k1, k2 := key1.String(), key2.String()
+	k1, k2 := runes.Clean(split[0]), runes.Clean(split[1])
 	if len(k1) < 1 || len(k2) < 1 {
 		return "", "", errors.New("found empty keys")
 	}

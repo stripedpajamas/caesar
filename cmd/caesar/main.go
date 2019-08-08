@@ -119,6 +119,8 @@ func getCipher(cipher string) (caesar.Cipher, error) {
 		return caesar.Playfair{}, nil
 	case "vigenere":
 		return caesar.Vigenere{}, nil
+	case "adfgx":
+		return caesar.ADFGX{}, nil
 	}
 	return nil, errors.New("unrecognized cipher type")
 }
