@@ -40,16 +40,25 @@ func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
 		substitution.WriteString(adfgx[r] + adfgx[c])
 	}
 
-	tb := newTranspositionBlock(substitution.String(), k2)
-	return tb.columnsInorder(), nil
+	tb := newTranspositionBlock(k2)
+	fractionated := tb.transpose(substitution.String())
+	return fractionated, nil
 }
 
 // Decrypt operates on a ciphertext string and a key string
 // that consists of two keys delimited by a semicolon (;).
 // The function first transposes the letters according to key2,
 // and then undoes the substitution using an alphabet square and key1.
-func (a ADFGX) Decrypt(plaintext, key string) (string, error) {
-	return "", nil
+func (a ADFGX) Decrypt(ciphertext, key string) (string, error) {
+	_, k2, err := a.parseKeys(key)
+	if err != nil {
+		return "", err
+	}
+
+	tb := newTranspositionBlock(k2)
+	unfranctionated := tb.detranspose(ciphertext)
+
+	return unfranctionated, nil
 }
 
 func (a ADFGX) parseKeys(input string) (string, string, error) {
