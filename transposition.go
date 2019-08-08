@@ -15,23 +15,11 @@ type element struct {
 	index int
 }
 
-type colinfo struct {
-	size  int
-	idx   int
-	value int
-}
-
 type byRune []element
 
 func (a byRune) Len() int           { return len(a) }
 func (a byRune) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 func (a byRune) Less(i, j int) bool { return a[i].value < a[j].value }
-
-type byValue []colinfo
-
-func (a byValue) Len() int           { return len(a) }
-func (a byValue) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
-func (a byValue) Less(i, j int) bool { return a[i].value < a[j].value }
 
 func newTranspositionBlock(key string) *transpositionBlock {
 	tb := new(transpositionBlock)
@@ -81,9 +69,9 @@ func (tb *transpositionBlock) detranspose(text string) string {
 	textIdx := 0
 	for i, colIdx := range tb.seq {
 		var column strings.Builder
-		start, end := textIdx, textIdx+colSizes[i]
-		textIdx = end
-		for start < end {
+		start := textIdx
+		textIdx += colSizes[i]
+		for start < textIdx {
 			column.WriteByte(text[start])
 			start++
 		}
