@@ -7,6 +7,13 @@ import (
 	"github.com/stripedpajamas/caesar/runes"
 )
 
+var adfgxReverse = map[byte]int{
+	'A': 0,
+	'D': 1,
+	'F': 2,
+	'G': 3,
+	'X': 4,
+}
 var adfgx = [5]string{"A", "D", "F", "G", "X"}
 
 // ADFGX represents the ADFGX cipher
@@ -50,7 +57,7 @@ func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
 // The function first transposes the letters according to key2,
 // and then undoes the substitution using an alphabet square and key1.
 func (a ADFGX) Decrypt(ciphertext, key string) (string, error) {
-	_, k2, err := a.parseKeys(key)
+	k1, k2, err := a.parseKeys(key)
 	if err != nil {
 		return "", err
 	}
@@ -58,7 +65,27 @@ func (a ADFGX) Decrypt(ciphertext, key string) (string, error) {
 	tb := newTranspositionBlock(k2)
 	unfranctionated := tb.detranspose(ciphertext)
 
-	return unfranctionated, nil
+	if len(unfranctionated)%2 != 0 {
+		return "", errors.New("invalid ciphertext length")
+	}
+
+	// convert pairs of letters into coordinates in keyblock
+	kb := newKeyblock(k1)
+	var out strings.Builder
+	for i := 0; i < len(unfranctionated); i += 2 {
+		row, found := adfgxReverse[unfranctionated[i]]
+		col, found := adfgxReverse[unfranctionated[i+1]]
+		if !found {
+			return "", errors.New("invalid ciphertext")
+		}
+		r, err := kb.getValue(location{row, col})
+		if err != nil {
+			return "", errors.New("invalid ciphertext")
+		}
+		out.WriteRune(r)
+	}
+
+	return out.String(), nil
 }
 
 func (a ADFGX) parseKeys(input string) (string, string, error) {

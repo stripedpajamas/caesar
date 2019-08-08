@@ -70,6 +70,13 @@ func (kb *keyblock) getCoordinates(r rune) (int, int, error) {
 	return loc.row, loc.col, nil
 }
 
+func (kb *keyblock) getValue(loc location) (rune, error) {
+	if loc.row >= 5 || loc.row < 0 || loc.col >= 5 || loc.col < 0 {
+		return 0, errors.New("invalid coordinates")
+	}
+	return kb.block[loc.row][loc.col], nil
+}
+
 // Used by Playfair cipher
 // - If the letters appear on the same row of your table,
 //   replace them with the letters to their immediate right respectively
