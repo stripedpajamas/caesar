@@ -13,20 +13,29 @@ leave off `-t <text>` and caesar will read from stdin.
 optionally you can also provide a `--groups` or `-g` parameter to specify how the output should be grouped. the default value is 5. groups setting is ignored for decrypt operations.
 
 ```shell
+# Caesar cipher
 $ caesar -c caesar -k m -t "peter" encrypt
 BQFQD
 $ caesar -c caesar -k m -t "BQFQD" decrypt
 PETER
 
+# Playfair cipher
 $ caesar -c playfair -k secret -t "peter" encrypt
 OCSCC Y
 $ caesar -c playfair -k secret -t "OCSCCY" decrypt
 PETERX
 
+# Vignere cipher
 $ caesar -c vigenere -k hotsauce -t "let's eat some cheerios" encrypt
 SSMKE UVWVA XUHYG VPCL
 $ caesar -c vigenere -k hotsauce -t "SSM KEU VWV AXU HYG VPC L" decrypt
 LETSEATSOMECHEERIOS
+
+# ADFGX cipher (takes two keys)
+$ caesar -c adfgx -k help,me -t "this is a test" encrypt
+GAAFA FXGDF GGAFG FGAGA GG
+$ caesar -c adfgx -k help,me -t "GAAFA FXGDF GGAFG FGAGA GG" decrypt
+THISISATEST
 
 # group output in chunks of 10 chars
 $ caesar -g 10 -c caesar -k m -t "mary had a little lamb whose fleece was white as snow" encrypt
@@ -42,6 +51,7 @@ ciphers implemented:
 - caesar https://en.wikipedia.org/wiki/Caesar_cipher
 - playfair https://en.wikipedia.org/wiki/Playfair_cipher
 - vigenere https://en.wikipedia.org/wiki/Vigenère_cipher
+- ADFGX https://en.wikipedia.org/wiki/ADFGVX_cipher (ADFGVX is not implemented)
 
 generally all the ciphers operate on english alphabetic letters (a-z). plaintext and keys are both specified as letters (although a number works for the caesar cipher as well, see below).
 
@@ -53,6 +63,9 @@ the key should be a keyword (anything else would be equivalent encrypting withou
 
 ### vigenere cipher
 the key should be a keyword (anything else would be equivalent encrypting without a key). non-alphabetic characters are ignored in the plaintext, and throw errors if present in the key.
+
+### ADFGX cipher
+two keys are required for this cipher, one for the polybius square and one for the transposition step. these keys should be comma delimited when running (e.g. `-k keyOne,keyTwo`).
 
 # license
 MIT
