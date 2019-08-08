@@ -1,7 +1,6 @@
 package caesar
 
 import (
-	"fmt"
 	"sort"
 	"strings"
 )
@@ -52,7 +51,6 @@ func (tb *transpositionBlock) transpose(text string) string {
 		}
 		tb.data[i] = column.String()
 	}
-	fmt.Println(tb)
 
 	var out strings.Builder
 	for _, colIdx := range tb.seq {
@@ -66,48 +64,31 @@ func (tb *transpositionBlock) transpose(text string) string {
 func (tb *transpositionBlock) detranspose(text string) string {
 	chunk := (len(text) / len(tb.seq)) + 1
 	incompleteColumns := (chunk * len(tb.seq)) - len(text)
-	fullColumnsRemaining := len(tb.seq) - incompleteColumns
-	fmt.Printf("fullColumnsRemaining: %d\n", fullColumnsRemaining)
+	fullColumns := len(tb.seq) - incompleteColumns
 
 	// associate seq with size of destination columns
-	colInfos := make([]colinfo, len(tb.seq))
+	colSizes := make([]int, len(tb.seq))
 	for i, seq := range tb.seq {
-		colInfos[i] = colinfo{
-			value: seq,
-			idx:   i,
-			size:  chunk,
+		if seq < fullColumns {
+			colSizes[i] = chunk
+		} else {
+			colSizes[i] = chunk - 1
 		}
-		if fullColumnsRemaining <= 0 {
-			colInfos[i].size = chunk - 1
-		}
-		fullColumnsRemaining--
 	}
 
-	// sort the column info by sequence value
-	// so that the first element in colInfos corresponds
-	// to the first chunk to be retrieved from input text
-	sort.Sort(byValue(colInfos))
-
-	fmt.Println(colInfos)
-
 	// iterate through text, adding letters to appropriate columns
-	// based on column info
+	// based on sequence number
 	textIdx := 0
-	for _, info := range colInfos {
+	for i, colIdx := range tb.seq {
 		var column strings.Builder
-		start, end := textIdx, textIdx+info.size
-		fmt.Printf("going to write %d chars to col %d, starting at %d\n",
-			info.size, info.idx, start)
+		start, end := textIdx, textIdx+colSizes[i]
 		textIdx = end
 		for start < end {
 			column.WriteByte(text[start])
 			start++
 		}
-		tb.data[info.idx] = column.String()
-		fmt.Printf("wrote them: %s\n", tb.data[info.idx])
+		tb.data[colIdx] = column.String()
 	}
-
-	fmt.Println(tb)
 	// return value is data read off by row
 	var out strings.Builder
 	for row := 0; row < chunk; row++ {
