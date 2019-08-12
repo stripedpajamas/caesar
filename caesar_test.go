@@ -109,6 +109,19 @@ func TestADFGX(t *testing.T) {
 	runTests(t, caesar.ADFGX{}, encryptionCases, decryptionCases)
 }
 
+func TestBifid(t *testing.T) {
+	encryptionCases := []testCase{
+		{"FLEE AT ONCE", "BGWKZQPNDSIOAXEFCLUMTHYVR", "UAEOLWRINS", false},
+		{"flEE aT once!!!", "BGWKZQPNDSIOAXEFCLUMTHYVR", "UAEOLWRINS", false},
+	}
+
+	decryptionCases := []testCase{
+		{"UAEOLWRINS", "BGWKZQPNDSIOAXEFCLUMTHYVR", "FLEEATONCE", false},
+	}
+
+	runTests(t, caesar.ADFGX{}, encryptionCases, decryptionCases)
+}
+
 func runTests(t *testing.T, c caesar.Cipher, encryptionCases, decryptionCases []testCase) {
 	for idx, tc := range encryptionCases {
 		actual, err := c.Encrypt(tc.input, tc.key)
