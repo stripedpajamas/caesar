@@ -65,5 +65,44 @@ func (a Bifid) Encrypt(plaintext, key string) (string, error) {
 // are de-transposed into values that are looked up in the square
 // to obtain the original plaintext string.
 func (a Bifid) Decrypt(ciphertext, key string) (string, error) {
-	return "", nil
+	kb := newKeyblock(key)
+	cleanCiphertext := runes.Clean(ciphertext)
+	staging := make([]location, len(cleanCiphertext))
+
+	// map ciphertext runes to pairs in square
+	for i, r := range cleanCiphertext {
+		if !runes.IsLetter(r) {
+			continue
+		}
+		loc, err := kb.getLocation(runes.ToUpper(r))
+		if err != nil {
+			// somehow a letter that isn't in the keyblock
+			// skip it
+			continue
+		}
+		staging[i] = loc
+	}
+
+	// read new pairs from staging (i, i + len)
+	pairs := make([]location, len(staging))
+	half := len(staging) / 2
+	pairIdx := 0
+	for i := 0; i < half; i++ {
+		pairs[pairIdx] = location{row: staging[i].row, col: staging[i+half].row}
+		pairs[pairIdx+1] = location{row: staging[i].col, col: staging[i+half].col}
+		pairIdx += 2
+	}
+
+	// convert pairs into letters
+	var out strings.Builder
+	for _, loc := range pairs {
+		r, err := kb.getValue(loc)
+		if err != nil {
+			// this is an illegal state
+			return "", errors.New("error converting transposed pairs into letters")
+		}
+		out.WriteRune(r)
+	}
+
+	return out.String(), nil
 }
