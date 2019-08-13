@@ -62,12 +62,12 @@ func newKeyblock(key string) *keyblock {
 	return kb
 }
 
-func (kb *keyblock) getCoordinates(r rune) (int, int, error) {
+func (kb *keyblock) getLocation(r rune) (location, error) {
 	loc, found := kb.lookup[r]
 	if !found {
-		return 0, 0, errors.New("char not found in keyblock")
+		return location{}, errors.New("char not found in keyblock")
 	}
-	return loc.row, loc.col, nil
+	return loc, nil
 }
 
 func (kb *keyblock) getValue(loc location) (rune, error) {

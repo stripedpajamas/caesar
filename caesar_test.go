@@ -119,7 +119,7 @@ func TestBifid(t *testing.T) {
 		{"UAEOLWRINS", "BGWKZQPNDSIOAXEFCLUMTHYVR", "FLEEATONCE", false},
 	}
 
-	runTests(t, caesar.ADFGX{}, encryptionCases, decryptionCases)
+	runTests(t, caesar.Bifid{}, encryptionCases, decryptionCases)
 }
 
 func runTests(t *testing.T, c caesar.Cipher, encryptionCases, decryptionCases []testCase) {

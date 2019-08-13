@@ -38,13 +38,13 @@ func (a ADFGX) Encrypt(plaintext, key string) (string, error) {
 		if !runes.IsLetter(r) {
 			continue
 		}
-		r, c, err := kb.getCoordinates(runes.ToUpper(r))
+		loc, err := kb.getLocation(runes.ToUpper(r))
 		if err != nil {
 			// somehow a letter that isn't in the keyblock
 			// skip it
 			continue
 		}
-		substitution.WriteString(adfgx[r] + adfgx[c])
+		substitution.WriteString(adfgx[loc.row] + adfgx[loc.col])
 	}
 
 	tb := newTranspositionBlock(k2)
