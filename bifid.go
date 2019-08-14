@@ -16,24 +16,9 @@ type Bifid struct{}
 // The function constructs an alphabet square from the key,
 // and obtains substitution values from it. The substitution values
 // are transposed and the transposed values are converted back into letters
-func (a Bifid) Encrypt(plaintext, key string) (string, error) {
+func (b Bifid) Encrypt(plaintext, key string) (string, error) {
 	kb := newKeyblock(key)
-	cleanPlaintext := runes.Clean(plaintext)
-	staging := make([]location, len(cleanPlaintext))
-
-	// map plaintext runes to pairs in square
-	for i, r := range cleanPlaintext {
-		if !runes.IsLetter(r) {
-			continue
-		}
-		loc, err := kb.getLocation(runes.ToUpper(r))
-		if err != nil {
-			// somehow a letter that isn't in the keyblock
-			// skip it
-			continue
-		}
-		staging[i] = loc
-	}
+	staging := b.initialProcess(plaintext, kb)
 
 	// split apart substitution pairs
 	transposed := make([]int, len(staging)*2)
@@ -43,20 +28,15 @@ func (a Bifid) Encrypt(plaintext, key string) (string, error) {
 		transposed[i+len(staging)] = staging[i].col
 	}
 
-	// read off pairs of transposed int stream and
-	// convert back to letters in square
-	var out strings.Builder
+	// map into locations
+	pairs := make([]location, len(staging))
+	pairIdx := 0
 	for i := 0; i < len(transposed); i += 2 {
-		loc := location{row: transposed[i], col: transposed[i+1]}
-		r, err := kb.getValue(loc)
-		if err != nil {
-			// this is an illegal state
-			return "", errors.New("error converting transposed pairs into letters")
-		}
-		out.WriteRune(r)
+		pairs[pairIdx] = location{row: transposed[i], col: transposed[i+1]}
+		pairIdx++
 	}
 
-	return out.String(), nil
+	return b.pairsToValues(pairs, kb)
 }
 
 // Decrypt operates on a ciphertext string and a key string
@@ -64,24 +44,9 @@ func (a Bifid) Encrypt(plaintext, key string) (string, error) {
 // and obtains substitution values from it. The substitution values
 // are de-transposed into values that are looked up in the square
 // to obtain the original plaintext string.
-func (a Bifid) Decrypt(ciphertext, key string) (string, error) {
+func (b Bifid) Decrypt(ciphertext, key string) (string, error) {
 	kb := newKeyblock(key)
-	cleanCiphertext := runes.Clean(ciphertext)
-	staging := make([]location, len(cleanCiphertext))
-
-	// map ciphertext runes to pairs in square
-	for i, r := range cleanCiphertext {
-		if !runes.IsLetter(r) {
-			continue
-		}
-		loc, err := kb.getLocation(runes.ToUpper(r))
-		if err != nil {
-			// somehow a letter that isn't in the keyblock
-			// skip it
-			continue
-		}
-		staging[i] = loc
-	}
+	staging := b.initialProcess(ciphertext, kb)
 
 	// read new pairs from staging (i, i + len)
 	pairs := make([]location, len(staging))
@@ -93,6 +58,31 @@ func (a Bifid) Decrypt(ciphertext, key string) (string, error) {
 		pairIdx += 2
 	}
 
+	return b.pairsToValues(pairs, kb)
+}
+
+func (b Bifid) initialProcess(input string, kb *keyblock) []location {
+	cleanInput := runes.Clean(input)
+	staging := make([]location, len(cleanInput))
+
+	// map plaintext runes to pairs in square
+	for i, r := range cleanInput {
+		if !runes.IsLetter(r) {
+			continue
+		}
+		loc, err := kb.getLocation(runes.ToUpper(r))
+		if err != nil {
+			// somehow a letter that isn't in the keyblock
+			// skip it
+			continue
+		}
+		staging[i] = loc
+	}
+
+	return staging
+}
+
+func (b Bifid) pairsToValues(pairs []location, kb *keyblock) (string, error) {
 	// convert pairs into letters
 	var out strings.Builder
 	for _, loc := range pairs {
