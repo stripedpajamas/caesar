@@ -113,10 +113,12 @@ func TestBifid(t *testing.T) {
 	encryptionCases := []testCase{
 		{"FLEE AT ONCE", "BGWKZQPNDSIOAXEFCLUMTHYVR", "UAEOLWRINS", false},
 		{"flEE aT once!!!", "BGWKZQPNDSIOAXEFCLUMTHYVR", "UAEOLWRINS", false},
+		{"on", "beadledom", "CD", false},
 	}
 
 	decryptionCases := []testCase{
 		{"UAEOLWRINS", "BGWKZQPNDSIOAXEFCLUMTHYVR", "FLEEATONCE", false},
+		{"cd", "beadledom", "ON", false},
 	}
 
 	runTests(t, caesar.Bifid{}, encryptionCases, decryptionCases)

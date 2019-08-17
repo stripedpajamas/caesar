@@ -121,6 +121,8 @@ func getCipher(cipher string) (caesar.Cipher, error) {
 		return caesar.Vigenere{}, nil
 	case "adfgx":
 		return caesar.ADFGX{}, nil
+	case "bifid":
+		return caesar.Bifid{}, nil
 	}
 	return nil, errors.New("unrecognized cipher type")
 }
