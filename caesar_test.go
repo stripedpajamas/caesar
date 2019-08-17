@@ -75,13 +75,13 @@ func TestVigenere(t *testing.T) {
 		{"attack at dawn", "lemon", "LXFOPVEFRNHR", false},
 		{"attack at dawn!!!", "lemon", "LXFOPVEFRNHR", false},
 		{"CRYPTO IS SHORT FOR CRYPTOGRAPHY", "ABCD", "CSASTPKVSIQUTGQUCSASTPIUAQJB", false},
-		{"asdf", "abc4", "", true},
+		{"asdf", "1414", "", true},
 	}
 
 	decryptionCases := []testCase{
 		{"LXFOPVEFRNHR", "lemon", "ATTACKATDAWN", false},
 		{"CSASTPKVSIQUTGQUCSASTPIUAQJB", "ABCD", "CRYPTOISSHORTFORCRYPTOGRAPHY", false},
-		{"asdf", "abc4", "", true},
+		{"asdf", "1414", "", true},
 	}
 
 	runTests(t, caesar.Vigenere{}, encryptionCases, decryptionCases)

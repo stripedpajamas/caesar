@@ -15,32 +15,23 @@ type Vigenere struct{}
 // Encrypt converts alphabetic characters to their corresponding
 // values based on the key parameter
 func (v Vigenere) Encrypt(plaintext, key string) (string, error) {
-	err := v.validateKey(key)
-	if err != nil {
-		return "", err
+	cleanKey := runes.Clean(key)
+	if len(cleanKey) < 1 {
+		return "", errors.New("key cannot be empty")
 	}
 
-	return v.process(plaintext, key, false), nil
+	return v.process(plaintext, cleanKey, false), nil
 }
 
 // Decrypt converts alphabetic characters to their corresponding
 // values based on the key parameter
 func (v Vigenere) Decrypt(ciphertext, key string) (string, error) {
-	err := v.validateKey(key)
-	if err != nil {
-		return "", err
+	cleanKey := runes.Clean(key)
+	if len(cleanKey) < 1 {
+		return "", errors.New("key cannot be empty")
 	}
 
-	return v.process(ciphertext, key, true), nil
-}
-
-func (v Vigenere) validateKey(key string) error {
-	for _, r := range key {
-		if !runes.IsLetter(r) {
-			return errors.New("key must be alphabetic")
-		}
-	}
-	return nil
+	return v.process(ciphertext, cleanKey, true), nil
 }
 
 func (v Vigenere) process(input, key string, reverse bool) string {
