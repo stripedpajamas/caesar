@@ -48,14 +48,17 @@ func (b Bifid) Decrypt(ciphertext, key string) (string, error) {
 	kb := newKeyblock(key)
 	staging := b.initialProcess(ciphertext, kb)
 
-	// read new pairs from staging (i, i + len)
+	// turn locations into flat list of numbers
+	flat := make([]int, len(staging)*2)
+	for i, loc := range staging {
+		flat[2*i] = loc.row
+		flat[(2*i)+1] = loc.col
+	}
+
+	// read new pairs from flat staging numbers (i, i + len)
 	pairs := make([]location, len(staging))
-	half := len(staging) / 2
-	pairIdx := 0
-	for i := 0; i < half; i++ {
-		pairs[pairIdx] = location{row: staging[i].row, col: staging[i+half].row}
-		pairs[pairIdx+1] = location{row: staging[i].col, col: staging[i+half].col}
-		pairIdx += 2
+	for i := 0; i < len(pairs); i++ {
+		pairs[i] = location{row: flat[i], col: flat[i+len(staging)]}
 	}
 
 	return b.pairsToValues(pairs, kb)
