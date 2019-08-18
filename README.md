@@ -114,6 +114,13 @@ generally all the ciphers operate on english alphabetic letters (a-z). plaintext
   $ cat my_love_letter.txt | caesar -c caesar -k 5 encrypt
   NKDTZ WJWJF INSLY MNXYM FYXUW JYYDH TTQ
   ```
+- chaining (careful when chaining ciphers that use a polybius square with ciphers that don't, as the I/J situation can get wonky)
+  ```shell
+  $ echo "potatoes or potatos" | caesar -c caesar -k 7 e | caesar -c vigenere -k "poptarts" e
+  LJPAA MERKM LOAYT NO
+  $ echo "LJPAA MERKM LOAYT NO" | caesar -c vigenere -k "poptarts" d | caesar -c caesar -k 7 d
+  POTATOESORPOTATOS
+```
 
 # License
 MIT
