@@ -48,6 +48,7 @@ func TestPlayfair(t *testing.T) {
 			"BMODZBXDNABEKUDMUIXMMOUVIF",
 			false,
 		},
+		{"french fries", "bombastic", "KNTUHQKNCTMZ", false},
 	}
 
 	decryptionCases := []testCase{
@@ -65,6 +66,7 @@ func TestPlayfair(t *testing.T) {
 			"",
 			true,
 		},
+		{"KNTUH QKNCT MZ", "bombastic", "FRENCHFRIESX", false},
 	}
 
 	runTests(t, caesar.Playfair{}, encryptionCases, decryptionCases)

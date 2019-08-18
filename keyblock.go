@@ -88,12 +88,22 @@ func (kb *keyblock) getValue(loc location) (rune, error) {
 //   The order is important – the first letter of the encrypted pair is the
 //   one that lies on the same row as the first letter of the plaintext pair.
 func (kb *keyblock) getCorrespondingPair(a, b rune, reverse bool) (x, y rune) {
+	a, b = runes.ToUpper(a), runes.ToUpper(b)
 	var diff int
 	if reverse {
 		diff = -1
 	} else {
 		diff = 1
 	}
+
+	// handle I=J
+	if a == 'J' {
+		a = 'I'
+	}
+	if b == 'J' {
+		b = 'I'
+	}
+
 	aLoc, bLoc := kb.lookup[a], kb.lookup[b]
 	var xLoc, yLoc location
 	if aLoc.row == bLoc.row {

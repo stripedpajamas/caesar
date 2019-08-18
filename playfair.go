@@ -47,16 +47,10 @@ func validateCiphertext(ciphertext string) error {
 }
 
 func (pf Playfair) process(input string, kb *keyblock, reverse bool) string {
-	var tmp strings.Builder
-	for _, r := range input {
-		if runes.IsLetter(r) {
-			tmp.WriteRune(r)
-		}
-	}
-	in := tmp.String()
+	cleanInput := runes.Clean(input)
 	var out strings.Builder
-	for i := 0; i < len(in); i += 2 {
-		a, b := rune(in[i]), rune(in[i+1])
+	for i := 0; i < len(cleanInput); i += 2 {
+		a, b := rune(cleanInput[i]), rune(cleanInput[i+1])
 		x, y := kb.getCorrespondingPair(a, b, reverse)
 		out.WriteRune(x)
 		out.WriteRune(y)
