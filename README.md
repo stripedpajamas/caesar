@@ -120,7 +120,7 @@ generally all the ciphers operate on english alphabetic letters (a-z). plaintext
   LJPAA MERKM LOAYT NO
   $ echo "LJPAA MERKM LOAYT NO" | caesar -c vigenere -k "poptarts" d | caesar -c caesar -k 7 d
   POTATOESORPOTATOS
-```
+  ```
 
 # License
 MIT
